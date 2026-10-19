@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { themeInitScript } from "@/components/theme-provider";
-import { AuthStoreProvider } from "@/components/providers/auth-store";
 import { MobileNav, Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
+import { AuthStoreProvider } from "@/components/providers/auth-store";
+import { themeInitScript } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import type { Metadata } from "next";
+import { Geist_Mono, Inter } from "next/font/google"; // 1. Importas Inter en lugar de Geist
+import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// 2. Configuras la fuente Inter
+const inter = Inter({
+  variable: "--font-inter", // Cambiamos la variable CSS
   subsets: ["latin"],
 });
 
@@ -22,24 +23,32 @@ export const metadata: Metadata = {
   description: "Autenticación y autorización centralizada",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="es"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      // 3. Usas la variable de inter en la clase del html
+      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-full bg-background text-foreground">
+      {/* 4. Aplicas la familia tipográfica por defecto en el body */}
+      <body className="min-h-full bg-background text-foreground font-sans">
         <AuthStoreProvider>
           <div className="flex min-h-screen">
             <Sidebar />
             <div className="flex min-w-0 flex-1 flex-col">
               <MobileNav />
               <Topbar />
-              <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">{children}</main>
+              <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">
+                {children}
+              </main>
             </div>
           </div>
           <Toaster richColors position="bottom-right" />
